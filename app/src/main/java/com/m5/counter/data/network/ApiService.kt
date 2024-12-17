@@ -1,5 +1,6 @@
-package com.m5.counter.data
+package com.m5.counter.data.network
 
+import com.m5.counter.data.model.LoveModel
 import retrofit2.Call
 
 import retrofit2.http.GET
@@ -14,6 +15,6 @@ interface ApiService {
         @Query("sname") secondName: String,
         @Header("X-RapidAPI-Key") apiKey: String,
         @Header("X-RapidAPI-Host") apiHost: String
-    ): Call<PercentageResponse>
+    ): Call<LoveModel>
 
 }

@@ -22,7 +22,7 @@
         tools:layout="@layout/fragment_result" >
         <argument
             android:name="result"
-            app:argType="com.m5.counter.data.PercentageResponse"
+            app:argType="com.m5.counter.data.model.LoveModel"
             app:nullable="true"
             android:defaultValue="@null" />
     </fragment>
