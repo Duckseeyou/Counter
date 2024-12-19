@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
+import com.m5.counter.R
 
 
 import com.m5.counter.databinding.FragmentResultBinding

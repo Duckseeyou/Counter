@@ -1,23 +1,22 @@
-package com.m5.counter.data.presenter
+package com.m5.counter.data.viewmodel
+
+
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModel
 import com.m5.counter.Constants
-import com.m5.counter.data.network.RetrofitInstance
 import com.m5.counter.data.model.LoveModel
-import com.m5.counter.data.view.LoveView
+import com.m5.counter.data.network.RetrofitInstance
 import retrofit2.Call
 import retrofit2.Response
 
-class LovePresenter {
-    private var loveView: LoveView? = null
+class LoveViewModel : ViewModel() {
 
-    fun attachView(loveView: LoveView) {
-        this.loveView = loveView
-    }
-    fun detachView() {
-        loveView = null
-    }
+    val data = MutableLiveData<LoveModel?>()
+    val error = MutableLiveData<String?>()
+    val loading = MutableLiveData<Boolean>()
 
-    fun onCalculateClick(firstName: String, secondName: String){
-        loveView?.showLoading(true)
+    fun onCalculateClick(firstName: String, secondName: String) {
+        loading.value = true
         RetrofitInstance.apiService.getPercentage(
             firstName = firstName,
             secondName = secondName,
@@ -30,19 +29,18 @@ class LovePresenter {
             ) {
                 if (response.isSuccessful && response.body() != null) {
                     val loveModel = response.body()!!
-                    loveView?.showLoading(false)
-                    loveView?.showResult(loveModel)
+                    data.value = loveModel
+                } else {
+                    error.value = response.message()
                 }
-                else{
-                    loveView?.showLoading(false)
-                    loveView?.showToast("Error")
-                }
+                loading.value = false
             }
 
             override fun onFailure(call: Call<LoveModel>, t: Throwable) {
-                loveView?.showLoading(false)
-                loveView?.showToast(t.message.toString())
+                error.value = t.message
+                loading.value = false
             }
         })
+
     }
 }
