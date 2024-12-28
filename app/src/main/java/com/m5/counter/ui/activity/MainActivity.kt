@@ -3,9 +3,10 @@ package com.m5.counter.ui.activity
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import com.m5.counter.databinding.ActivityMainBinding
+import dagger.hilt.android.AndroidEntryPoint
 
 
-
+@AndroidEntryPoint
 class MainActivity : AppCompatActivity(){
 
     private var binding: ActivityMainBinding? = null

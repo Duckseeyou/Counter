@@ -10,17 +10,19 @@ import android.view.ViewGroup
 import android.view.animation.LinearInterpolator
 import android.widget.Toast
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.ViewModelProvider
+import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.m5.counter.data.viewmodel.LoveViewModel
 import com.m5.counter.databinding.FragmentCalculateBinding
+import dagger.hilt.android.AndroidEntryPoint
 
 
+@AndroidEntryPoint
 class CalculateFragment : Fragment(){
 
     private var _binding: FragmentCalculateBinding? = null
     private val binding get() = _binding!!
-    private val viewModel by lazy { ViewModelProvider(this)[LoveViewModel::class.java] }
+    private val viewModel: LoveViewModel by viewModels()
 
 
     override fun onCreateView(
@@ -40,17 +42,20 @@ class CalculateFragment : Fragment(){
                 binding.firstName.text.toString(),
                 binding.secondName.text.toString()
             )
-
         }
-
-        viewModel.data.observe(viewLifecycleOwner) { loveModel ->
+        binding.historyBtn.setOnClickListener {
+            findNavController().navigate(CalculateFragmentDirections.actionCalculateFragmentToHistoryFragment())
+        }
+        viewModel.apiData.observe(viewLifecycleOwner) { loveModel ->
             if (loveModel != null) {
                 binding.firstName.text.clear()
                 binding.secondName.text.clear()
                 findNavController().navigate(
                     CalculateFragmentDirections.actionCalculateFragmentToResultFragment(loveModel)
                 )
-                viewModel.data.value = null
+                viewModel.apiData.value = null
+            } else {
+                Toast.makeText(requireContext(), "Error", Toast.LENGTH_SHORT).show()
             }
         }
 
@@ -62,6 +67,9 @@ class CalculateFragment : Fragment(){
                 binding.apply {
                     progressIndicator.visibility = View.VISIBLE
                     calculateBtn.visibility = View.GONE
+                    historyBtn.visibility = View.GONE
+                    firstName.isEnabled = false
+                    secondName.isEnabled = false
                     val animation = ObjectAnimator.ofInt(progressIndicator, "progress", 0, 90)
                     animation.interpolator = LinearInterpolator()
                     animation.start()
@@ -69,6 +77,9 @@ class CalculateFragment : Fragment(){
                 }
             } else {
                 binding.apply {
+                    firstName.isEnabled = true
+                    secondName.isEnabled = true
+                    historyBtn.visibility = View.VISIBLE
                     dimContainer.visibility = View.GONE
                     progressIndicator.visibility = View.GONE
                     calculateBtn.visibility = View.VISIBLE
